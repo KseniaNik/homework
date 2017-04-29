@@ -1,14 +1,21 @@
 package homework.model;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Created on 29.04.2017.
  */
+@XmlRootElement
 public class Article extends Model {
 
     private int orderId;
     private String name;
     private int color;
     private String components;
+
+    private Article() {
+        //
+    }
 
     public Article(String name, int color, String components) {
         this(-1, -1, name, color, components);

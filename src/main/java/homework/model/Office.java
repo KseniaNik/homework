@@ -1,12 +1,19 @@
 package homework.model;
 
+import javax.xml.bind.annotation.*;
+
 /**
  * Created on 29.04.2017.
  */
+@XmlRootElement
 public class Office extends Model {
 
     private String name;
     private String address;
+
+    private Office() {
+        //
+    }
 
     public Office(int id, String name, String address) {
         super(id);

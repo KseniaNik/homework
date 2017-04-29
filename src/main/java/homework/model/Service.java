@@ -1,12 +1,19 @@
 package homework.model;
 
+import javax.xml.bind.annotation.*;
+
 /**
  * Created on 29.04.2017.
  */
+@XmlRootElement
 public class Service extends Model {
 
     private String name;
     private double price;
+
+    private Service() {
+        //
+    }
 
     public Service(int id, String name, double price) {
         super(id);

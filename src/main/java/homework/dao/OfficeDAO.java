@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 29.04.2017.
@@ -13,20 +15,12 @@ import java.sql.SQLException;
 public class OfficeDAO extends DAO<Office> {
 
     private final PreparedStatement insertOfficeStatement;
-    private final PreparedStatement deleteOfficeStatement;
     private final PreparedStatement findOfficeByNameStatement;
-    private final PreparedStatement findOfficeByIDStatement;
 
     public OfficeDAO(Connection connection) throws SQLException {
-        super(connection);
+        super(connection, "offices");
         insertOfficeStatement = connection.prepareStatement(
                 "insert into offices (name, address) values (?, ?)"
-        );
-        deleteOfficeStatement = connection.prepareStatement(
-                "delete from offices where id = ?"
-        );
-        findOfficeByIDStatement = connection.prepareStatement(
-                "select * from offices where id = ?"
         );
         findOfficeByNameStatement = connection.prepareStatement(
                 "select * from offices where name = ?"
@@ -45,16 +39,11 @@ public class OfficeDAO extends DAO<Office> {
         return one(findOfficeByNameStatement.executeQuery());
     }
 
-    @Override
-    public Office findByID(int id) throws SQLException {
-        findOfficeByIDStatement.setInt(1, id);
-        return one(findOfficeByIDStatement.executeQuery());
-    }
-
-    @Override
-    public void deleteByID(int id) throws SQLException {
-        deleteOfficeStatement.setInt(1, id);
-        deleteOfficeStatement.executeUpdate();
+    public Map<Integer, Integer> addManyExisting(List<Office> values) throws SQLException {
+        return insertMultipleWithIDFetch(insertOfficeStatement, (statement, value) -> {
+            statement.setString(1, value.getName());
+            statement.setString(2, value.getAddress());
+        }, values);
     }
 
     @Override

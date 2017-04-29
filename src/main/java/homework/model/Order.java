@@ -1,11 +1,14 @@
 package homework.model;
 
-import java.sql.Date;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import java.util.Date;
 import java.util.List;
 
 /**
  * Created on 29.04.2017.
  */
+@XmlRootElement
 public class Order extends Model {
 
     private String clientFirstName;
@@ -18,6 +21,11 @@ public class Order extends Model {
     private int officeId;
     private int employeeId;
 
+    private Order() {
+        //
+    }
+
+    @XmlTransient
     private List<Article> articleList;
 
     public Order(int id, String clientFirstName, String clientLastName, String clientPatronymicName, String phoneNumber,

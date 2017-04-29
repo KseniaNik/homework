@@ -1,10 +1,12 @@
 package homework.model;
 
-import java.sql.Date;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Date;
 
 /**
  * Created on 29.04.2017.
  */
+@XmlRootElement
 public class Employee extends Model {
 
     private String firstName;
@@ -14,6 +16,10 @@ public class Employee extends Model {
     private String phoneNumber;
     private Date hireDate;
     private double salary;
+
+    private Employee() {
+        //
+    }
 
     public Employee(int id, String firstName, String lastName, String patronymicName,
                     Date dateOfBirth, String phoneNumber, Date hireDate, double salary) {

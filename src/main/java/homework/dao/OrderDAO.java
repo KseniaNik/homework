@@ -7,6 +7,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static homework.util.Util.toSqlDate;
+import static homework.util.Util.toSqlTimestamp;
 
 /**
  * Created on 29.04.2017.
@@ -14,19 +20,11 @@ import java.util.Date;
 public class OrderDAO extends DAO<Order> {
 
     private final PreparedStatement insertOrderStatement;
-    private final PreparedStatement findByIDStatement;
-    private final PreparedStatement deleteByIDStatement;
 
     public OrderDAO(Connection connection)
             throws SQLException {
-        super(connection);
+        super(connection, "orders");
 
-        findByIDStatement = connection.prepareStatement(
-                "select * from orders where id = ?"
-        );
-        deleteByIDStatement = connection.prepareStatement(
-                "delete from orders where id = ?"
-        );
         insertOrderStatement = connection.prepareStatement(
                 "insert into orders " +
                         "(first_name, last_name, patr_name, phone_number, order_date, executed, " +
@@ -39,33 +37,41 @@ public class OrderDAO extends DAO<Order> {
             String clientName, String clientLastName, String clientPatronymicName,
             String phoneNumber, int serviceId, int officeId, int employeeId) throws SQLException {
 
-        java.sql.Date date = new java.sql.Date(new Date().getTime());
+        Date now = new Date();
+        java.sql.Timestamp timestamp = toSqlTimestamp(now);
 
         insertOrderStatement.setString(1, clientName);
         insertOrderStatement.setString(2, clientLastName);
         insertOrderStatement.setString(3, clientPatronymicName);
         insertOrderStatement.setString(4, phoneNumber);
-        insertOrderStatement.setDate(5, date);
+        insertOrderStatement.setTimestamp(5, timestamp);
         insertOrderStatement.setBoolean(6, false);
         insertOrderStatement.setInt(7, serviceId);
         insertOrderStatement.setInt(8, officeId);
         insertOrderStatement.setInt(9, employeeId);
 
         return new Order(executeInsert(insertOrderStatement),
-                clientName, clientLastName, clientPatronymicName, phoneNumber, date,
+                clientName, clientLastName, clientPatronymicName, phoneNumber, now,
                 false, serviceId, officeId, employeeId);
     }
 
-    @Override
-    public Order findByID(int id) throws SQLException {
-        findByIDStatement.setInt(1, id);
-        return one(findByIDStatement.executeQuery());
-    }
-
-    @Override
-    public void deleteByID(int id) throws SQLException {
-        deleteByIDStatement.setInt(1, id);
-        deleteByIDStatement.executeUpdate();
+    public Map<Integer, Integer> addManyExisting(List<Order> values,
+                                   Map<Integer, Integer> serviceIdMap,
+                                   Map<Integer, Integer> officeIdMap,
+                                   Map<Integer, Integer> employeeIdMap) throws SQLException {
+        Map<Integer, Integer> result = new HashMap<>();
+        insertMultipleWithIDFetch(insertOrderStatement, (statement, value) -> {
+            statement.setString(1, value.getClientFirstName());
+            statement.setString(2, value.getClientLastName());
+            statement.setString(3, value.getClientPatronymicName());
+            statement.setString(4, value.getPhoneNumber());
+            statement.setTimestamp(5, toSqlTimestamp(value.getOrderDate()));
+            statement.setBoolean(6, value.isExecuted());
+            statement.setInt(7, serviceIdMap.get(value.getServiceId()));
+            statement.setInt(8, officeIdMap.get(value.getOfficeId()));
+            statement.setInt(9, employeeIdMap.get(value.getEmployeeId()));
+        }, values, result);
+        return result;
     }
 
     @Override
@@ -76,7 +82,7 @@ public class OrderDAO extends DAO<Order> {
                 resultSet.getString("last_name"),
                 resultSet.getString("patr_name"),
                 resultSet.getString("phone_number"),
-                resultSet.getDate("order_date"),
+                resultSet.getTimestamp("order_date"),
                 resultSet.getBoolean("executed"),
                 resultSet.getInt("service_id"),
                 resultSet.getInt("office_id"),

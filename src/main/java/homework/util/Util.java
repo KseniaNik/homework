@@ -1,5 +1,8 @@
 package homework.util;
 
+import homework.dao.*;
+import homework.model.Article;
+import homework.model.Employee;
 import org.sqlite.SQLiteConfig;
 
 import java.io.File;
@@ -45,4 +48,13 @@ public class Util {
         config.enforceForeignKeys(true);
         return DriverManager.getConnection(String.format("jdbc:sqlite:%s", dbName), config.toProperties());
     }
+
+    public static java.sql.Date toSqlDate(java.util.Date date) {
+        return new java.sql.Date(date.getTime());
+    }
+
+    public static java.sql.Timestamp toSqlTimestamp(java.util.Date date) {
+        return new java.sql.Timestamp(date.getTime());
+    }
+
 }

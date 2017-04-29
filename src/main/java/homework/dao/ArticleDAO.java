@@ -7,28 +7,21 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 29.04.2017.
  */
 public class ArticleDAO extends DAO<Article> {
 
-    private final PreparedStatement findByIDStatement;
-    private final PreparedStatement deleteByIDStatement;
     private final PreparedStatement insertStatement;
     private final PreparedStatement findByOrderIDStatement;
 
     public ArticleDAO(Connection connection) throws SQLException {
-        super(connection);
+        super(connection, "articles");
 
-        findByIDStatement = connection.prepareStatement(
-                "select * from articles where id = ?"
-        );
         findByOrderIDStatement = connection.prepareStatement(
                 "select * from articles where order_id = ?"
-        );
-        deleteByIDStatement = connection.prepareStatement(
-                "delete from articles where id = ?"
         );
         insertStatement = connection.prepareStatement(
                 "insert into articles (order_id, name, color, components) values (?, ?, ?, ?)"
@@ -47,19 +40,17 @@ public class ArticleDAO extends DAO<Article> {
             statement.setString(2, value.getName());
             statement.setInt(3, value.getColor());
             statement.setString(4, value.getComponents());
-        }, articles);
+        }, articles, null);
     }
 
-    @Override
-    public Article findByID(int id) throws SQLException {
-        findByIDStatement.setInt(1, id);
-        return one(findByIDStatement.executeQuery());
-    }
-
-    @Override
-    public void deleteByID(int id) throws SQLException {
-        deleteByIDStatement.setInt(1, id);
-        deleteByIDStatement.executeUpdate();
+    public Map<Integer, Integer> addManyExisting(List<Article> values,
+                                                 Map<Integer, Integer> orderIdMap) throws SQLException {
+        return insertMultipleWithIDFetch(insertStatement, (s, v) -> {
+            s.setInt(1, orderIdMap.get(v.getOrderId()));
+            s.setString(2, v.getName());
+            s.setInt(3, v.getColor());
+            s.setString(4, v.getComponents());
+        }, values);
     }
 
     @Override
