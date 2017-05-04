@@ -3,7 +3,6 @@ package homework;
 import homework.dao.*;
 import homework.model.*;
 import homework.util.Util;
-import homework.xml.ExportedDatabase;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -18,7 +17,7 @@ import java.sql.SQLException;
 public class Application {
 
     private Connection connection;
-
+    private String dbName;
     private OfficeDAO officeDAO;
     private ServiceDAO serviceDAO;
     private EmployeeDAO employeeDAO;
@@ -28,8 +27,15 @@ public class Application {
     private JAXBContext context;
 
     public Application(String dbName) throws SQLException, IOException {
-
+        this.dbName = dbName;
         connection = Util.connect(dbName);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                connection.close();
+            } catch (SQLException ignored) {
+            }
+        }));
 
         initializeSchema();
 
@@ -40,15 +46,6 @@ public class Application {
         employeeDAO = new EmployeeDAO(connection);
         orderDAO = new OrderDAO(connection);
         articleDAO = new ArticleDAO(connection);
-    }
-
-    private JAXBContext getContext() throws JAXBException {
-        if (context == null) {
-            context = JAXBContext.newInstance(
-                    Service.class, Article.class, Employee.class, Office.class, Order.class, ExportedDatabase.class
-            );
-        }
-        return context;
     }
 
     public void initializeSchema() throws IOException, SQLException {
@@ -114,5 +111,18 @@ public class Application {
 
     public ArticleDAO getArticleDAO() {
         return articleDAO;
+    }
+
+    private JAXBContext getContext() throws JAXBException {
+        if (context == null) {
+            context = JAXBContext.newInstance(
+                    Service.class, Article.class, Employee.class, Office.class, Order.class, ExportedDatabase.class
+            );
+        }
+        return context;
+    }
+
+    public String getDbName() {
+        return dbName;
     }
 }

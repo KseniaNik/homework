@@ -1,6 +1,4 @@
-package homework.xml;
-
-import homework.model.*;
+package homework.model;
 
 import javax.xml.bind.annotation.*;
 import java.util.List;
@@ -88,7 +86,7 @@ public class ExportedDatabase {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("ExportedDatabase{");
+        final StringBuilder sb = new StringBuilder("ExportedDatabase{");
         sb.append("services=").append(services);
         sb.append(", offices=").append(offices);
         sb.append(", employees=").append(employees);

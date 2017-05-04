@@ -1,18 +1,16 @@
 package homework.xml;
 
 import homework.model.*;
-import homework.xml.ExportedDatabase;
 import org.testng.annotations.Test;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import java.io.File;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Collections;
 import java.util.Date;
 
-import static java.util.Arrays.asList;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -41,11 +39,11 @@ public class MarshallingTest {
         Article sampleArticle = new Article(1, 1, "base", 123, "1,2,4");
 
         ExportedDatabase db = new ExportedDatabase(
-                asList(sampleService),
-                asList(sampleOffice),
-                asList(sampleEmployee),
-                asList(sampleOrder),
-                asList(sampleArticle)
+                Collections.singletonList(sampleService),
+                Collections.singletonList(sampleOffice),
+                Collections.singletonList(sampleEmployee),
+                Collections.singletonList(sampleOrder),
+                Collections.singletonList(sampleArticle)
         );
 
         StringWriter writer = new StringWriter();
