@@ -24,12 +24,12 @@ public class Util {
 
     public static void executeSQLScript(String resourceName, Connection connection)
             throws IOException, SQLException {
-        try (Statement statement = connection.createStatement()) {
-            URL resource = Util.class.getClassLoader().getResource(resourceName);
+        try (Statement statement = connection.createStatement()) {/*
+            URL resource = Util.class.getClassLoader().getResourceAsStream(resourceName);
             if (resource == null) {
                 throw new IOException(String.format("No such resource: %s", resourceName));
-            }
-            try (InputStream is = new FileInputStream(new File(resource.getFile()))) {
+            }*/
+            try (InputStream is = Util.class.getClassLoader().getResourceAsStream(resourceName)) {
                 Scanner scanner = new Scanner(is).useDelimiter(
                         Pattern.compile("(\\s*;\\s*|--.*?$)", Pattern.MULTILINE));
                 while (scanner.hasNext()) {
