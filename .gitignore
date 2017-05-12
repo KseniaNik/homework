@@ -1,6 +1,7 @@
 .idea/
 gradle/
 *.ipr
+*.iml
 
 *.sqlitedb
 
