@@ -6,6 +6,9 @@ import homework.util.Util;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.SchemaOutputResolver;
+import javax.xml.transform.Result;
+import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -65,6 +68,16 @@ public class Application {
                 orderDAO.retrieveAll(),
                 articleDAO.retrieveAll()
         );
+        try {
+            context.generateSchema(new SchemaOutputResolver() {
+                @Override
+                public Result createOutput(String namespaceUri, String suggestedFileName) throws IOException {
+                    return new StreamResult(new File(suggestedFileName));
+                }
+            });
+        } catch (IOException ignored) {
+            // our SchemaOutputResolver doesnt throw any IOException for now
+        }
         context.createMarshaller().marshal(exportedDatabase, file);
     }
 

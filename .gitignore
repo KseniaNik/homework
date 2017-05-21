@@ -3,6 +3,10 @@ gradle/
 *.ipr
 *.iml
 
+temp.xml
+*.xsd
+
+
 *.sqlitedb
 
 # Created by .ignore support plugin (hsz.mobi)
