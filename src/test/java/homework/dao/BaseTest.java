@@ -1,37 +1,37 @@
 package homework.dao;
 
-import homework.util.Util;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 /**
  * Created on 29.04.2017.
  */
 public class BaseTest {
 
-    protected Connection connection;
+    protected ServiceDAO serviceDAO;
+    protected OrderDAO orderDAO;
+    protected OfficeDAO officeDAO;
+    protected ArticleDAO articleDAO;
+    protected EmployeeDAO employeeDAO;
+
+    private EntityManagerFactory emf;
 
     @BeforeMethod
     public void setUp() {
-        try {
-            connection = Util.connect("test.sqlitedb");
-            Util.executeSQLScript("drop_schema.sql", connection);
-            Util.executeSQLScript("initialize_schema.sql", connection);
-        } catch (SQLException | IOException e) {
-            e.printStackTrace();
-        }
+        emf = Persistence.createEntityManagerFactory("homework");
+        serviceDAO = new ServiceDAO(emf.createEntityManager());
+        officeDAO = new OfficeDAO(emf.createEntityManager());
+        articleDAO = new ArticleDAO(emf.createEntityManager());
+        employeeDAO = new EmployeeDAO(emf.createEntityManager());
+        orderDAO = new OrderDAO(emf.createEntityManager());
     }
 
     @AfterMethod
     public void cleanUp() {
-        try {
-            connection.close();
-        } catch (SQLException ignored) {
-        }
+        emf.close();
     }
 
 }

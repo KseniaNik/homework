@@ -1,41 +1,49 @@
 package homework.model;
 
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Created on 29.04.2017.
  */
 @XmlRootElement
-public class Article extends Model {
+@Entity
+@Table(name = "articles")
+public class Article implements Model {
 
-    private int orderId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    // scalar data
     private String name;
-    private int color;
+    private Integer color;
     private String components;
 
-    private Article() {
-        //
+    @XmlTransient
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Order order;
+
+    public Article() {
     }
 
-    public Article(String name, int color, String components) {
-        this(-1, -1, name, color, components);
-    }
-
-    public Article(int id, int orderId, String name, int color, String components) {
-        super(id);
-
-        this.orderId = orderId;
+    public Article(String name, Integer color, String components) {
         this.name = name;
         this.color = color;
         this.components = components;
     }
 
-    public int getOrderId() {
-        return orderId;
+    public Long getId() {
+        return id;
     }
 
-    public void setOrderId(int orderId) {
-        this.orderId = orderId;
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public String getName() {
@@ -46,11 +54,11 @@ public class Article extends Model {
         this.name = name;
     }
 
-    public int getColor() {
+    public Integer getColor() {
         return color;
     }
 
-    public void setColor(int color) {
+    public void setColor(Integer color) {
         this.color = color;
     }
 
@@ -64,9 +72,8 @@ public class Article extends Model {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("Article{");
+        final StringBuilder sb = new StringBuilder("Article{");
         sb.append("id=").append(id);
-        sb.append(", orderId=").append(orderId);
         sb.append(", name='").append(name).append('\'');
         sb.append(", color=").append(color);
         sb.append(", components='").append(components).append('\'');

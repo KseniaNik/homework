@@ -11,23 +11,23 @@ import java.util.List;
 public class ExportedDatabase {
 
     @XmlElementWrapper(name = "services")
-    @XmlElement(name = "service")
+    @XmlElement(name = "Service")
     private List<Service> services;
 
     @XmlElementWrapper(name = "offices")
-    @XmlElement(name = "office")
+    @XmlElement(name = "Office")
     private List<Office> offices;
 
     @XmlElementWrapper(name = "employees")
-    @XmlElement(name = "employee")
+    @XmlElement(name = "Employee")
     private List<Employee> employees;
 
     @XmlElementWrapper(name = "orders")
-    @XmlElement(name = "order")
+    @XmlElement(name = "Order")
     private List<Order> orders;
 
     @XmlElementWrapper(name = "articles")
-    @XmlElement(name = "article")
+    @XmlElement(name = "Article")
     private List<Article> articles;
 
     private ExportedDatabase() {}

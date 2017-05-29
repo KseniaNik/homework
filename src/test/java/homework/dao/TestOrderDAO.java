@@ -1,11 +1,9 @@
 package homework.dao;
 
-import homework.model.Employee;
-import homework.model.Office;
-import homework.model.Order;
-import homework.model.Service;
+import homework.model.*;
 import org.testng.annotations.Test;
 
+import java.util.Collections;
 import java.util.Date;
 
 import static org.testng.Assert.assertEquals;
@@ -17,22 +15,27 @@ public class TestOrderDAO extends BaseTest {
 
     @Test
     public void testOrderDAO() throws Exception {
-        EmployeeDAO employeeDAO = new EmployeeDAO(connection);
         Employee chosenEmployee = employeeDAO.createEmployee("emp1", "WE", "121",
                 new Date(), "empty", 20000);
-
-        OfficeDAO officeDAO = new OfficeDAO(connection);
         Office chosenOffice = officeDAO.createOffice("of3", "moskovskaya, 3");
-
-        ServiceDAO serviceDAO = new ServiceDAO(connection);
         Service chosenService = serviceDAO.createService("ser2", 2.4);
-
-        OrderDAO orderDAO = new OrderDAO(connection);
         Order order = orderDAO.createOrder("me", "", "",
                 "PHONE NUMA",
-                chosenService.getId(), chosenOffice.getId(), chosenEmployee.getId());
+                chosenService, chosenOffice, chosenEmployee,
+                Collections.singletonList(
+                        new Article("ball", 0x0, "")
+                ));
 
-        assertEquals(orderDAO.findByID(order.getId()).getClientFirstName(), "me");
+
+        orderDAO.createOrder("me12313", "", "",
+                "PHONE N2342UMA",
+                chosenService, chosenOffice, chosenEmployee,
+                Collections.singletonList(
+                        new Article("wall", 0x0, "")
+                ));
+
+
+        assertEquals(orderDAO.findById(order.getId()).getClientFirstName(), "me");
     }
 
 }

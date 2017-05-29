@@ -1,25 +1,10 @@
 package homework.model;
 
 /**
- * Created on 29.04.2017.
+ * Created on 26.05.2017.
  */
-public class Model {
+public interface Model {
 
-    protected int id;
+    Long getId();
 
-    public Model() {
-        id = -1;
-    }
-
-    public Model(int id) {
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 }

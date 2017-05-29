@@ -1,24 +1,28 @@
 package homework.model;
 
-import javax.xml.bind.annotation.*;
+import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Created on 29.04.2017.
  */
 @XmlRootElement
-public class Office extends Model {
+@Entity
+@Table(name = "offices")
+public class Office implements Model {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String name;
     private String address;
 
-    private Office() {
-        //
+    public Office() {
     }
 
-    public Office(int id, String name, String address) {
-        super(id);
-        this.name = name;
-        this.address = address;
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
@@ -39,7 +43,7 @@ public class Office extends Model {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("Office{");
+        final StringBuilder sb = new StringBuilder("Office{");
         sb.append("id=").append(id);
         sb.append(", name='").append(name).append('\'');
         sb.append(", address='").append(address).append('\'');

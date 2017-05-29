@@ -13,13 +13,12 @@ public class TestServiceDAO extends BaseTest {
     @Test
     public void testServiceDAO() throws Exception {
 
-        ServiceDAO serviceDAO = new ServiceDAO(connection);
         Service chosenService = serviceDAO.createService("ser123", 2.4);
         serviceDAO.createService("ser42", 2.4);
         serviceDAO.createService("ser1", 2.4);
 
         assertEquals(serviceDAO.findByName("ser123").getId(), chosenService.getId());
-        assertEquals(serviceDAO.findByID(chosenService.getId()).getName(), chosenService.getName());
+        assertEquals(serviceDAO.findById(chosenService.getId()).getName(), chosenService.getName());
 
     }
 

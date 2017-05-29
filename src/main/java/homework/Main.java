@@ -4,13 +4,9 @@ import homework.cmdline.CmdLineInterface;
 import homework.cmdline.Command;
 import homework.cmdline.CommandException;
 import homework.cmdline.CommandResult;
-import homework.model.*;
 
-import javax.xml.bind.JAXBException;
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.stream.Collectors;
 
 /**
  * Created on 29.04.2017.
@@ -27,7 +23,7 @@ public class Main {
         }
 
         try {
-            app = new Application(args[0]);
+            app = new Application();
         } catch (SQLException | IOException e) {
             e.printStackTrace();
             return;
@@ -61,37 +57,37 @@ public class Main {
             public CommandResult execute(String params) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("====== DATABASE DUMP START ======\n");
-                sb.append("Database name: ").append(app.getDbName()).append("\n\n");
+                sb.append("Database name: ");//.append(app.getDbName()).append("\n\n");
                 sb.append("Tables: \n");
-                try {
-                    sb.append("=== Offices:\n").append(
-                            String.join("\n",
-                                    app.getOfficeDAO().retrieveAll().stream()
-                                            .map(Office::toString).collect(Collectors.toList()))
-                    ).append("\n=== END Offices;\n");
-                    sb.append("=== Services:\n").append(
-                            String.join("\n",
-                                    app.getServiceDAO().retrieveAll().stream()
-                                            .map(Service::toString).collect(Collectors.toList()))
-                    ).append("\n=== END Services;\n");
-                    sb.append("=== Articles:\n").append(
-                            String.join("\n",
-                                    app.getArticleDAO().retrieveAll().stream()
-                                            .map(Article::toString).collect(Collectors.toList()))
-                    ).append("\n=== END Artices;\n");
-                    sb.append("=== Orders:\n").append(
-                            String.join("\n",
-                                    app.getOrderDAO().retrieveAll().stream()
-                                            .map(Order::toString).collect(Collectors.toList()))
-                    ).append("\n=== END Orders;\n");
-                    sb.append("=== Employees:\n").append(
-                            String.join("\n",
-                                    app.getEmployeeDAO().retrieveAll().stream()
-                                            .map(Employee::toString).collect(Collectors.toList()))
-                    ).append("\n=== END Employees;\n");
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    sb.append("=== Offices:\n").append(
+//                            String.join("\n",
+//                                    app.getOfficeDAO().retrieveAll().stream()
+//                                            .map(Office::toString).collect(Collectors.toList()))
+//                    ).append("\n=== END Offices;\n");
+//                    sb.append("=== Services:\n").append(
+//                            String.join("\n",
+//                                    app.getServiceDAO().retrieveAll().stream()
+//                                            .map(Service::toString).collect(Collectors.toList()))
+//                    ).append("\n=== END Services;\n");
+//                    sb.append("=== Articles:\n").append(
+//                            String.join("\n",
+//                                    app.getArticleDAO().retrieveAll().stream()
+//                                            .map(Article::toString).collect(Collectors.toList()))
+//                    ).append("\n=== END Artices;\n");
+//                    sb.append("=== Orders:\n").append(
+//                            String.join("\n",
+//                                    app.getOrderDAO().retrieveAll().stream()
+//                                            .map(Order::toString).collect(Collectors.toList()))
+//                    ).append("\n=== END Orders;\n");
+//                    sb.append("=== Employees:\n").append(
+//                            String.join("\n",
+//                                    app.getEmployeeDAO().retrieveAll().stream()
+//                                            .map(Employee::toString).collect(Collectors.toList()))
+//                    ).append("\n=== END Employees;\n");
+//                } catch (SQLException e) {
+//                    e.printStackTrace();
+//                }
                 sb.append("======  DATABASE DUMP END  ======");
                 return new CommandResult(sb.toString());
             }
@@ -105,16 +101,16 @@ public class Main {
                 try {
                     switch (args[0]) {
                         case "import":
-                            app.importDatabaseFromXML(new File(args[1]));
+                            //app.importDatabaseFromXML(new File(args[1]));
                             break;
                         case "export":
-                            app.exportDatabaseToXML(new File(args[1]));
+                            //app.exportDatabaseToXML(new File(args[1]));
                             break;
                         default:
                             throw new CommandException(getName(), "error: unrecognized option: " + args[0] +
                                     "\npossible options are: import, export");
                     }
-                } catch (JAXBException | SQLException e) {
+                } catch (RuntimeException e) {//(JAXBException | SQLException e) {
                     throw new CommandException(getName(), "error: " + e.getMessage());
                 }
 

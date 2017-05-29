@@ -1,5 +1,6 @@
 package homework.model;
 
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 
@@ -7,7 +8,13 @@ import java.util.Date;
  * Created on 29.04.2017.
  */
 @XmlRootElement
-public class Employee extends Model {
+@Entity
+@Table(name = "employees")
+public class Employee implements Model {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String firstName;
     private String lastName;
@@ -15,22 +22,13 @@ public class Employee extends Model {
     private Date dateOfBirth;
     private String phoneNumber;
     private Date hireDate;
-    private double salary;
+    private Double salary;
 
-    private Employee() {
-        //
+    public Employee() {
     }
 
-    public Employee(int id, String firstName, String lastName, String patronymicName,
-                    Date dateOfBirth, String phoneNumber, Date hireDate, double salary) {
-        super(id);
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.patronymicName = patronymicName;
-        this.dateOfBirth = dateOfBirth;
-        this.phoneNumber = phoneNumber;
-        this.hireDate = hireDate;
-        this.salary = salary;
+    public Long getId() {
+        return id;
     }
 
     public String getFirstName() {
@@ -81,17 +79,17 @@ public class Employee extends Model {
         this.hireDate = hireDate;
     }
 
-    public double getSalary() {
+    public Double getSalary() {
         return salary;
     }
 
-    public void setSalary(double salary) {
+    public void setSalary(Double salary) {
         this.salary = salary;
     }
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("Employee{");
+        final StringBuilder sb = new StringBuilder("Employee{");
         sb.append("id=").append(id);
         sb.append(", firstName='").append(firstName).append('\'');
         sb.append(", lastName='").append(lastName).append('\'');

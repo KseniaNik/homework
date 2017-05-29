@@ -14,7 +14,7 @@ public class TestEmployeeDAO extends BaseTest {
 
     @Test
     public void testEmployeeDAO() throws Exception {
-        EmployeeDAO employeeDAO = new EmployeeDAO(connection);
+
         employeeDAO.createEmployee("emp1", "WE", "121",
                 new Date(), "empty", 20000);
         Employee chosenEmployee = employeeDAO.createEmployee("emp2", "WE", "121",
@@ -24,7 +24,7 @@ public class TestEmployeeDAO extends BaseTest {
         employeeDAO.createEmployee("emp4", "WE", "121",
                 new Date(), "empty", 20000);
 
-        assertEquals(employeeDAO.getMostPaidEmployee().getId(), chosenEmployee.getId());
-        assertEquals(employeeDAO.findByID(chosenEmployee.getId()).getFirstName(), chosenEmployee.getFirstName());
+        assertEquals(employeeDAO.findMostPaidEmployee().getId(), chosenEmployee.getId());
+        assertEquals(employeeDAO.findById(chosenEmployee.getId()).getFirstName(), chosenEmployee.getFirstName());
     }
 }

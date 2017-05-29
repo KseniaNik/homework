@@ -1,24 +1,28 @@
 package homework.model;
 
-import javax.xml.bind.annotation.*;
+import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Created on 29.04.2017.
  */
 @XmlRootElement
-public class Service extends Model {
+@Entity
+@Table(name = "services")
+public class Service implements Model {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String name;
-    private double price;
+    private Double price;
 
-    private Service() {
-        //
+    public Service() {
     }
 
-    public Service(int id, String name, double price) {
-        super(id);
-        this.name = name;
-        this.price = price;
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
@@ -29,17 +33,17 @@ public class Service extends Model {
         this.name = name;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("Service{");
+        final StringBuilder sb = new StringBuilder("Service{");
         sb.append("id=").append(id);
         sb.append(", name='").append(name).append('\'');
         sb.append(", price=").append(price);

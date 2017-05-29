@@ -1,7 +1,7 @@
 package homework.model;
 
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import java.util.Date;
 import java.util.List;
 
@@ -9,37 +9,36 @@ import java.util.List;
  * Created on 29.04.2017.
  */
 @XmlRootElement
-public class Order extends Model {
+@Entity
+@Table(name = "orders")
+public class Order implements Model {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
+    // scalar data
     private String clientFirstName;
     private String clientLastName;
     private String clientPatronymicName;
     private String phoneNumber;
     private Date orderDate;
-    private boolean executed;
-    private int serviceId;
-    private int officeId;
-    private int employeeId;
+    private Boolean executed;
 
-    private Order() {
-        //
-    }
-
-    @XmlTransient
+    //relations
+    @ManyToOne
+    private Service service;
+    @ManyToOne
+    private Office office;
+    @ManyToOne
+    private Employee employee;
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Article> articleList;
 
-    public Order(int id, String clientFirstName, String clientLastName, String clientPatronymicName, String phoneNumber,
-                 Date orderDate, boolean executed, int serviceId, int officeId, int employeeId) {
-        super(id);
-        this.clientFirstName = clientFirstName;
-        this.clientLastName = clientLastName;
-        this.clientPatronymicName = clientPatronymicName;
-        this.phoneNumber = phoneNumber;
-        this.orderDate = orderDate;
-        this.executed = executed;
-        this.serviceId = serviceId;
-        this.officeId = officeId;
-        this.employeeId = employeeId;
+    public Order() {
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getClientFirstName() {
@@ -82,36 +81,36 @@ public class Order extends Model {
         this.orderDate = orderDate;
     }
 
-    public boolean isExecuted() {
+    public Boolean isExecuted() {
         return executed;
     }
 
-    public void setExecuted(boolean executed) {
+    public void setExecuted(Boolean executed) {
         this.executed = executed;
     }
 
-    public int getServiceId() {
-        return serviceId;
+    public Service getService() {
+        return service;
     }
 
-    public void setServiceId(int serviceId) {
-        this.serviceId = serviceId;
+    public void setService(Service service) {
+        this.service = service;
     }
 
-    public int getOfficeId() {
-        return officeId;
+    public Office getOffice() {
+        return office;
     }
 
-    public void setOfficeId(int officeId) {
-        this.officeId = officeId;
+    public void setOffice(Office office) {
+        this.office = office;
     }
 
-    public int getEmployeeId() {
-        return employeeId;
+    public Employee getEmployee() {
+        return employee;
     }
 
-    public void setEmployeeId(int employeeId) {
-        this.employeeId = employeeId;
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
 
     public List<Article> getArticleList() {
@@ -124,7 +123,7 @@ public class Order extends Model {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("Order{");
+        final StringBuilder sb = new StringBuilder("Order{");
         sb.append("id=").append(id);
         sb.append(", clientFirstName='").append(clientFirstName).append('\'');
         sb.append(", clientLastName='").append(clientLastName).append('\'');
@@ -132,9 +131,9 @@ public class Order extends Model {
         sb.append(", phoneNumber='").append(phoneNumber).append('\'');
         sb.append(", orderDate=").append(orderDate);
         sb.append(", executed=").append(executed);
-        sb.append(", serviceId=").append(serviceId);
-        sb.append(", officeId=").append(officeId);
-        sb.append(", employeeId=").append(employeeId);
+        sb.append(", service=").append(service);
+        sb.append(", office=").append(office);
+        sb.append(", employee=").append(employee);
         sb.append(", articleList=").append(articleList);
         sb.append('}');
         return sb.toString();

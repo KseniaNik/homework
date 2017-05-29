@@ -2,134 +2,57 @@ package homework.dao;
 
 import homework.model.Model;
 
-import javax.swing.plaf.nimbus.State;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import javax.persistence.EntityExistsException;
+import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Created on 29.04.2017.
+ * Created on 26.05.2017.
  */
-public abstract class DAO<T extends Model> {
+public class DAO<T extends Model> {
 
-    private final String tableName;
+    private final Class<T> type;
+    protected final EntityManager manager;
 
-    private final PreparedStatement getLastIDStatement;
-    private final PreparedStatement findByIDStatement;
-    private final PreparedStatement getAllStatement;
-    private final PreparedStatement deleteStatement;
-
-    protected Connection connection;
-
-    public DAO(Connection connection, String tableName) throws SQLException {
-        this.connection = connection;
-        this.tableName = tableName;
-
-        getLastIDStatement = connection.prepareStatement(
-                "select last_insert_rowid()"
-        );
-        deleteStatement = connection.prepareStatement(
-                String.format("delete from %s where id = ?", tableName)
-        );
-        findByIDStatement = connection.prepareStatement(
-                String.format("select * from %s where id = ?", tableName)
-        );
-        getAllStatement = connection.prepareStatement(
-                String.format("select * from %s", tableName)
-        );
+    protected DAO(Class<T> type, EntityManager manager) {
+        this.manager = manager;
+        this.type = type;
     }
 
-    List<T> many(ResultSet resultSet) throws SQLException {
-        List<T> result = new ArrayList<>();
-        while (resultSet.next()) {
-            result.add(one(resultSet));
-        }
-        return result;
+    public final T findById(Long id) {
+        return manager.find(type, id);
     }
 
-    public interface Action<R> {
-        R perform() throws SQLException;
+    public final T update(T entity) {
+        manager.getTransaction().begin();
+        T updated = manager.merge(entity);
+        manager.getTransaction().commit();
+        return updated;
     }
 
-    final <R> R doInTransaction(Action<R> action) throws SQLException {
-        boolean ac = connection.getAutoCommit();
-        connection.setAutoCommit(false);
-        R result;
-
-        try {
-            result = action.perform();
-        } catch (Exception e) {
-            connection.rollback();
-            connection.setAutoCommit(ac);
-            throw new SQLException("transaction exception", e);
-        }
-
-        connection.commit();
-        connection.setAutoCommit(ac);
-        return result;
+    public final void delete(T entity) {
+        manager.getTransaction().begin();
+        manager.remove(entity);
+        manager.getTransaction().commit();
     }
 
-    public interface StatementUpdateAction<T> {
-        void perform(PreparedStatement statement, T value) throws SQLException;
-    }
-
-    /**
-     * Insert multiple + fetch ids; ! IS SLOW ! - not using batch
-     */
-    final void insertMultipleWithIDFetch(PreparedStatement statement,
-                                         StatementUpdateAction<T> updateAction,
-                                         List<T> values,
-                                         Map<Integer, Integer> idMap) throws SQLException {
-        doInTransaction(() -> {
-            for (T value : values) {
-                updateAction.perform(statement, value);
-                statement.executeUpdate();
-                int newId = getLastIDStatement.executeQuery().getInt(1);
-                if (idMap != null) {
-                    idMap.put(value.getId(), newId);
-                }
-                value.setId(newId);
+    public final void doImport(List<T> values) {
+        manager.getTransaction().begin();
+        for (T t : values) {
+            try {
+                manager.persist(t);
+            } catch (EntityExistsException e) {
+                // TODO: rethrow?
+                System.err.println(String.format("Adding entity %s failed: already exists", t.toString()));
             }
-            return Void.TYPE;
-        });
+        }
+        manager.getTransaction().commit();
     }
 
-    final Map<Integer, Integer> insertMultipleWithIDFetch(PreparedStatement statement,
-                                                          StatementUpdateAction<T> updateAction,
-                                                          List<T> values) throws SQLException {
-        Map<Integer, Integer> result = new HashMap<>();
-        insertMultipleWithIDFetch(statement, updateAction, values, result);
-        return result;
+    public final List<T> doExport() {
+        return manager.createQuery(manager.getCriteriaBuilder().createQuery(type))
+                .getResultList();
     }
 
-    /**
-     * Insert one + fetch id IN transaction
-     */
-    final int executeInsert(PreparedStatement statement) throws SQLException {
-        return doInTransaction(() -> {
-            statement.executeUpdate();
-            return getLastIDStatement.executeQuery().getInt(1);
-        });
-    }
 
-    public final List<T> retrieveAll() throws SQLException {
-        return many(getAllStatement.executeQuery());
-    }
-
-    public final T findByID(int id) throws SQLException {
-        findByIDStatement.setInt(1, id);
-        return one(findByIDStatement.executeQuery());
-    }
-
-    public final void deleteByID(int id) throws SQLException {
-        deleteStatement.setInt(1, id);
-        deleteStatement.executeUpdate();
-    }
-
-    protected abstract T one(ResultSet resultSet) throws SQLException;
 }
