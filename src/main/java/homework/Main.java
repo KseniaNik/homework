@@ -5,6 +5,8 @@ import homework.cmdline.Command;
 import homework.cmdline.CommandException;
 import homework.cmdline.CommandResult;
 
+import javax.xml.bind.JAXBException;
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -17,11 +19,6 @@ public class Main {
     private static CmdLineInterface cmdLineInterface;
 
     public static void main(String[] args) {
-        if (args.length < 1) {
-            System.out.println("please specify sqlite db to connect to");
-            return;
-        }
-
         try {
             app = new Application();
         } catch (SQLException | IOException e) {
@@ -48,6 +45,7 @@ public class Main {
             @Override
             public CommandResult execute(String params) {
                 cmdLineInterface.stop();
+                app.exit();
                 return new CommandResult("c ya");
             }
         });
@@ -101,16 +99,16 @@ public class Main {
                 try {
                     switch (args[0]) {
                         case "import":
-                            //app.importDatabaseFromXML(new File(args[1]));
+                            app.importDatabaseFromXML(new File(args[1]));
                             break;
                         case "export":
-                            //app.exportDatabaseToXML(new File(args[1]));
+                            app.exportDatabaseToXML(new File(args[1]));
                             break;
                         default:
                             throw new CommandException(getName(), "error: unrecognized option: " + args[0] +
                                     "\npossible options are: import, export");
                     }
-                } catch (RuntimeException e) {//(JAXBException | SQLException e) {
+                } catch (JAXBException | SQLException e) {
                     throw new CommandException(getName(), "error: " + e.getMessage());
                 }
 

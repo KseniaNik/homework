@@ -2,6 +2,7 @@ package homework;
 
 import homework.dao.*;
 import homework.model.*;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -39,62 +40,48 @@ public class Application {
         employeeDAO = new EmployeeDAO(factory.createEntityManager());
         orderDAO = new OrderDAO(factory.createEntityManager());
         articleDAO = new ArticleDAO(factory.createEntityManager());
+    }
 
+    public void exportSchema() throws JAXBException {
+        context = getContext();
         try {
-            getContext().generateSchema(new SchemaOutputResolver() {
+            context.generateSchema(new SchemaOutputResolver() {
                 @Override
                 public Result createOutput(String namespaceUri, String suggestedFileName) throws IOException {
                     return new StreamResult(new File(suggestedFileName));
                 }
             });
         } catch (IOException ignored) {
-        } catch (JAXBException e) {
-            e.printStackTrace();
+            // our SchemaOutputResolver doesnt throw any IOException for now
         }
     }
 
-//    public void exportDatabaseToXML(File file) throws SQLException, JAXBException {
-//        context = getContext();
+    public void exportDatabaseToXML(File file) throws SQLException, JAXBException {
+        context = getContext();
+        throw new NotImplementedException();
 //        ExportedDatabase exportedDatabase = new ExportedDatabase(
 //                serviceDAO.retrieveAll(),
 //                officeDAO.retrieveAll(),
 //                employeeDAO.retrieveAll(),
 //                orderDAO.retrieveAll(),
-//                articleDAO.retrieveAll()
 //        );
-//        try {
-//            context.generateSchema(new SchemaOutputResolver() {
-//                @Override
-//                public Result createOutput(String namespaceUri, String suggestedFileName) throws IOException {
-//                    return new StreamResult(new File(suggestedFileName));
-//                }
-//            });
-//        } catch (IOException ignored) {
-//            // our SchemaOutputResolver doesnt throw any IOException for now
-//        }
+//        exportSchema();
 //        context.createMarshaller().marshal(exportedDatabase, file);
-//    }
+    }
 
-//    public void importDatabaseFromXML(File file) throws SQLException, JAXBException {
-//        context = getContext();
-//        Object t = context.createUnmarshaller().unmarshal(file);
-//        if (!(t instanceof ExportedDatabase)) {
-//            throw new JAXBException("import failed"); // TODO: replace with ImportException
-//        }
-//
-//        ExportedDatabase db = (ExportedDatabase)t;
-//
-//        // perform huge database insert with id upgrade
-//        articleDAO.addManyExisting(
-//                db.getArticles(),
-//                orderDAO.addManyExisting(
-//                        db.getOrders(),
-//                        serviceDAO.addManyExisting(db.getService()),
-//                        officeDAO.addManyExisting(db.getOffices()),
-//                        employeeDAO.addManyExisting(db.getEmployees())
-//                )
-//        );
-//    }
+    public void importDatabaseFromXML(File file) throws SQLException, JAXBException {
+        context = getContext();
+        Object t = context.createUnmarshaller().unmarshal(file);
+        if (!(t instanceof ExportedDatabase)) {
+            throw new JAXBException("import failed"); // TODO: replace with ImportException
+        }
+
+        ExportedDatabase db = (ExportedDatabase) t;
+
+        // perform huge database insert with id upgrade
+        // TODO implement
+        throw new NotImplementedException();
+    }
 
     public OfficeDAO getOfficeDAO() {
         return officeDAO;
@@ -130,5 +117,17 @@ public class Application {
             instance = new Application();
         }
         return instance;
+    }
+
+    public void exit() {
+        context = null;
+        // although we could just invoke factory.close() to close all EMs, we want to perform custom close op
+        officeDAO.close();
+        articleDAO.close();
+        employeeDAO.close();
+        orderDAO.close();
+        serviceDAO.close();
+        //
+        factory.close();
     }
 }

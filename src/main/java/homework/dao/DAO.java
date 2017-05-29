@@ -54,5 +54,12 @@ public class DAO<T extends Model> {
                 .getResultList();
     }
 
+    public final void close() {
+        if (manager.getTransaction().isActive()) {
+            manager.getTransaction().rollback();
+            manager.flush();
+        }
+        manager.close();
+    }
 
 }
