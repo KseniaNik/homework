@@ -58,15 +58,15 @@ public class Application {
 
     public void exportDatabaseToXML(File file) throws SQLException, JAXBException {
         context = getContext();
-        throw new NotImplementedException();
-//        ExportedDatabase exportedDatabase = new ExportedDatabase(
-//                serviceDAO.retrieveAll(),
-//                officeDAO.retrieveAll(),
-//                employeeDAO.retrieveAll(),
-//                orderDAO.retrieveAll(),
-//        );
-//        exportSchema();
-//        context.createMarshaller().marshal(exportedDatabase, file);
+        // throw new NotImplementedException();
+        ExportedDatabase exportedDatabase = new ExportedDatabase(
+                serviceDAO.doExport(),
+                officeDAO.doExport(),
+                employeeDAO.doExport(),
+                orderDAO.doExport()
+        );
+        exportSchema();
+        context.createMarshaller().marshal(exportedDatabase, file);
     }
 
     public void importDatabaseFromXML(File file) throws SQLException, JAXBException {
@@ -80,7 +80,10 @@ public class Application {
 
         // perform huge database insert with id upgrade
         // TODO implement
-        throw new NotImplementedException();
+        orderDAO.doImport(db.getOrders());
+        officeDAO.doImport(db.getOffices());
+        employeeDAO.doImport(db.getEmployees());
+        serviceDAO.doImport(db.getServices());
     }
 
     public OfficeDAO getOfficeDAO() {

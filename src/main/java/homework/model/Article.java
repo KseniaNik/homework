@@ -14,6 +14,7 @@ public class Article implements Model {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @XmlTransient
     private Long id;
 
     // scalar data
