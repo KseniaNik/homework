@@ -26,22 +26,16 @@ public class ExportedDatabase {
     @XmlElement(name = "Order")
     private List<Order> orders;
 
-    @XmlElementWrapper(name = "articles")
-    @XmlElement(name = "Article")
-    private List<Article> articles;
-
     private ExportedDatabase() {}
 
     public ExportedDatabase(List<Service> services,
                             List<Office> offices,
                             List<Employee> employees,
-                            List<Order> orders,
-                            List<Article> articles) {
+                            List<Order> orders) {
         this.services = services;
         this.offices = offices;
         this.employees = employees;
         this.orders = orders;
-        this.articles = articles;
     }
 
     public List<Service> getServices() {
@@ -76,14 +70,6 @@ public class ExportedDatabase {
         this.orders = orders;
     }
 
-    public List<Article> getArticles() {
-        return articles;
-    }
-
-    public void setArticles(List<Article> articles) {
-        this.articles = articles;
-    }
-
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("ExportedDatabase{");
@@ -91,7 +77,6 @@ public class ExportedDatabase {
         sb.append(", offices=").append(offices);
         sb.append(", employees=").append(employees);
         sb.append(", orders=").append(orders);
-        sb.append(", articles=").append(articles);
         sb.append('}');
         return sb.toString();
     }
