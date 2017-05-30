@@ -4,6 +4,7 @@ import homework.model.Model;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
 
 /**
@@ -50,8 +51,9 @@ public class DAO<T extends Model> {
     }
 
     public final List<T> doExport() {
-        return manager.createQuery(manager.getCriteriaBuilder().createQuery(type))
-                .getResultList();
+        CriteriaQuery<T> criteriaQuery = manager.getCriteriaBuilder().createQuery(type);
+        criteriaQuery.select(criteriaQuery.from(type));
+        return manager.createQuery(criteriaQuery).getResultList();
     }
 
     public final void close() {

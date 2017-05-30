@@ -26,14 +26,6 @@ public class Main {
             return;
         }
 
-        try {
-            // exporting schema
-            app.exportSchema();
-        } catch (JAXBException e) {
-            e.printStackTrace();
-            return;
-        }
-
         cmdLineInterface = configureAppCommands();
         cmdLineInterface.loop();
     }
