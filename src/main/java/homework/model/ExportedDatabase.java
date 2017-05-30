@@ -1,13 +1,16 @@
 package homework.model;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import java.util.List;
 
 /**
  * Created on 29.04.2017.
  */
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "ExportedDatabase")
 public class ExportedDatabase {
 
     @XmlElementWrapper(name = "services")

@@ -2,6 +2,7 @@ package homework.model;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import java.util.List;
  * Created on 29.04.2017.
  */
 @XmlRootElement
+@XmlType(name = "Order")
 @Entity
 @Table(name = "orders")
 public class Order implements Model {
@@ -39,6 +41,10 @@ public class Order implements Model {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getClientFirstName() {

@@ -2,7 +2,6 @@ package homework;
 
 import homework.dao.*;
 import homework.model.*;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -79,8 +78,37 @@ public class Application {
         ExportedDatabase db = (ExportedDatabase) t;
 
         // perform huge database insert with id upgrade
-        // TODO implement
-        orderDAO.doImport(db.getOrders());
+        for (Order order : db.getOrders()) {
+            Employee employee = order.getEmployee();
+            if (employee == null) {
+                System.err.println("employee missing from order! not importing " + order);
+                continue;
+            }
+            db.getEmployees().remove(employee);
+            employee.setId(null);
+            employeeDAO.save(employee);
+
+            Service service = order.getService();
+            if (service == null) {
+                System.err.println("service missing from order! not importing " + order);
+                continue;
+            }
+            db.getServices().remove(service);
+            service.setId(null);
+            serviceDAO.save(service);
+
+            Office office = order.getOffice();
+            if (office == null) {
+                System.err.println("office missing from order! not importing " + order);
+                continue;
+            }
+            db.getOffices().remove(office);
+            office.setId(null);
+            officeDAO.save(office);
+
+            orderDAO.save(order);
+        }
+
         officeDAO.doImport(db.getOffices());
         employeeDAO.doImport(db.getEmployees());
         serviceDAO.doImport(db.getServices());

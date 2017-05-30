@@ -2,11 +2,13 @@ package homework.model;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Created on 29.04.2017.
  */
 @XmlRootElement
+@XmlType(name = "Office")
 @Entity
 @Table(name = "offices")
 public class Office implements Model {
@@ -23,6 +25,10 @@ public class Office implements Model {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {

@@ -3,11 +3,13 @@ package homework.model;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Created on 29.04.2017.
  */
 @XmlRootElement
+@XmlType(name = "Article")
 @Entity
 @Table(name = "articles")
 public class Article implements Model {
@@ -37,6 +39,10 @@ public class Article implements Model {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Order getOrder() {

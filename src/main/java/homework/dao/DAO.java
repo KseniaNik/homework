@@ -31,6 +31,13 @@ public class DAO<T extends Model> {
         return updated;
     }
 
+    public final T save(T entity) {
+        manager.getTransaction().begin();
+        manager.persist(entity);
+        manager.getTransaction().commit();
+        return entity;
+    }
+
     public final void delete(T entity) {
         manager.getTransaction().begin();
         manager.remove(entity);
@@ -41,6 +48,7 @@ public class DAO<T extends Model> {
         manager.getTransaction().begin();
         for (T t : values) {
             try {
+                t.setId(null);
                 manager.persist(t);
             } catch (EntityExistsException e) {
                 // TODO: rethrow?

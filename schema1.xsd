@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-    <xs:element name="article" type="article"/>
+    <xs:element name="article" type="Article"/>
 
-    <xs:element name="employee" type="employee"/>
+    <xs:element name="employee" type="Employee"/>
 
-    <xs:element name="exportedDatabase" type="exportedDatabase"/>
+    <xs:element name="exportedDatabase" type="ExportedDatabase"/>
 
-    <xs:element name="office" type="office"/>
+    <xs:element name="office" type="Office"/>
 
-    <xs:element name="order" type="order"/>
+    <xs:element name="order" type="Order"/>
 
-    <xs:element name="service" type="service"/>
+    <xs:element name="service" type="Service"/>
 
-    <xs:complexType name="service">
+    <xs:complexType name="Service">
         <xs:sequence>
             <xs:element name="id" type="xs:long" minOccurs="0"/>
             <xs:element name="name" type="xs:string" minOccurs="0"/>
@@ -21,7 +21,7 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="article">
+    <xs:complexType name="Article">
         <xs:sequence>
             <xs:element name="name" type="xs:string" minOccurs="0"/>
             <xs:element name="color" type="xs:int" minOccurs="0"/>
@@ -29,7 +29,7 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="employee">
+    <xs:complexType name="Employee">
         <xs:sequence>
             <xs:element name="id" type="xs:long" minOccurs="0"/>
             <xs:element name="firstName" type="xs:string" minOccurs="0"/>
@@ -42,7 +42,7 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="office">
+    <xs:complexType name="Office">
         <xs:sequence>
             <xs:element name="id" type="xs:long" minOccurs="0"/>
             <xs:element name="name" type="xs:string" minOccurs="0"/>
@@ -50,7 +50,7 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="order">
+    <xs:complexType name="Order">
         <xs:sequence>
             <xs:element name="id" type="xs:long" minOccurs="0"/>
             <xs:element name="clientFirstName" type="xs:string" minOccurs="0"/>
@@ -62,37 +62,37 @@
             <xs:element ref="service" minOccurs="0"/>
             <xs:element ref="office" minOccurs="0"/>
             <xs:element ref="employee" minOccurs="0"/>
-            <xs:element name="articleList" type="article" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="articleList" type="Article" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="exportedDatabase">
+    <xs:complexType name="ExportedDatabase">
         <xs:sequence>
             <xs:element name="services" minOccurs="0">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="Service" type="service" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element name="Service" type="Service" minOccurs="0" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="offices" minOccurs="0">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="Office" type="office" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element name="Office" type="Office" minOccurs="0" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="employees" minOccurs="0">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="Employee" type="employee" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element name="Employee" type="Employee" minOccurs="0" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
             <xs:element name="orders" minOccurs="0">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="Order" type="order" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element name="Order" type="Order" minOccurs="0" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>

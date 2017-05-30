@@ -4,6 +4,8 @@ gradle/
 *.iml
 
 temp.xml
+temp.out.xml
+temp.out2.xml
 *.xsd
 
 
