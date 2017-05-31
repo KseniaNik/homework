@@ -144,5 +144,13 @@ public class Order implements Model {
         sb.append('}');
         return sb.toString();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order other = (Order) o;
+        return (id != null ? !id.equals(other.id) : other.id != null);
+    }
 }
 

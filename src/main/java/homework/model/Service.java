@@ -56,4 +56,12 @@ public class Service implements Model {
         sb.append('}');
         return sb.toString();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Service other = (Service) o;
+        return (id != null ? !id.equals(other.id) : other.id != null);
+    }
 }
