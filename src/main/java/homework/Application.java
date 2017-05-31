@@ -106,6 +106,7 @@ public class Application {
             office.setId(null);
             officeDAO.save(office);
 
+            order.setId(null);
             orderDAO.save(order);
         }
 

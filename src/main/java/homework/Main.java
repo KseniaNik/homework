@@ -4,11 +4,13 @@ import homework.cmdline.CmdLineInterface;
 import homework.cmdline.Command;
 import homework.cmdline.CommandException;
 import homework.cmdline.CommandResult;
+import homework.model.*;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.stream.Collectors;
 
 /**
  * Created on 29.04.2017.
@@ -46,7 +48,7 @@ public class Main {
             public CommandResult execute(String params) {
                 cmdLineInterface.stop();
                 app.exit();
-                return new CommandResult("c ya");
+                return new CommandResult("c ya!");
             }
         });
 
@@ -55,37 +57,32 @@ public class Main {
             public CommandResult execute(String params) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("====== DATABASE DUMP START ======\n");
-                sb.append("Database name: ");//.append(app.getDbName()).append("\n\n");
                 sb.append("Tables: \n");
-//                try {
-//                    sb.append("=== Offices:\n").append(
-//                            String.join("\n",
-//                                    app.getOfficeDAO().retrieveAll().stream()
-//                                            .map(Office::toString).collect(Collectors.toList()))
-//                    ).append("\n=== END Offices;\n");
-//                    sb.append("=== Services:\n").append(
-//                            String.join("\n",
-//                                    app.getServiceDAO().retrieveAll().stream()
-//                                            .map(Service::toString).collect(Collectors.toList()))
-//                    ).append("\n=== END Services;\n");
-//                    sb.append("=== Articles:\n").append(
-//                            String.join("\n",
-//                                    app.getArticleDAO().retrieveAll().stream()
-//                                            .map(Article::toString).collect(Collectors.toList()))
-//                    ).append("\n=== END Artices;\n");
-//                    sb.append("=== Orders:\n").append(
-//                            String.join("\n",
-//                                    app.getOrderDAO().retrieveAll().stream()
-//                                            .map(Order::toString).collect(Collectors.toList()))
-//                    ).append("\n=== END Orders;\n");
-//                    sb.append("=== Employees:\n").append(
-//                            String.join("\n",
-//                                    app.getEmployeeDAO().retrieveAll().stream()
-//                                            .map(Employee::toString).collect(Collectors.toList()))
-//                    ).append("\n=== END Employees;\n");
-//                } catch (SQLException e) {
-//                    e.printStackTrace();
-//                }
+                sb.append("=== Offices:\n").append(
+                        String.join("\n",
+                                app.getOfficeDAO().doExport().stream()
+                                        .map(Office::toString).collect(Collectors.toList()))
+                ).append("\n=== END Offices;\n");
+                sb.append("=== Services:\n").append(
+                        String.join("\n",
+                                app.getServiceDAO().doExport().stream()
+                                        .map(Service::toString).collect(Collectors.toList()))
+                ).append("\n=== END Services;\n");
+                sb.append("=== Articles:\n").append(
+                        String.join("\n",
+                                app.getArticleDAO().doExport().stream()
+                                        .map(Article::toString).collect(Collectors.toList()))
+                ).append("\n=== END Artices;\n");
+                sb.append("=== Orders:\n").append(
+                        String.join("\n",
+                                app.getOrderDAO().doExport().stream()
+                                        .map(Order::toString).collect(Collectors.toList()))
+                ).append("\n=== END Orders;\n");
+                sb.append("=== Employees:\n").append(
+                        String.join("\n",
+                                app.getEmployeeDAO().doExport().stream()
+                                        .map(Employee::toString).collect(Collectors.toList()))
+                ).append("\n=== END Employees;\n");
                 sb.append("======  DATABASE DUMP END  ======");
                 return new CommandResult(sb.toString());
             }
@@ -113,6 +110,37 @@ public class Main {
                 }
 
                 return new CommandResult(args[0] + String.format(" successful (%s)", args[1]));
+            }
+        });
+
+        cmdLineInterface.addCommand(new Command("print") {
+            @Override
+            public CommandResult execute(String params) throws CommandException {
+                String[] args = params.split("\\s+");
+                switch (args[0]) {
+                    case "employees":
+                        return new CommandResult(
+                                String.join("\n",
+                                        app.getEmployeeDAO().doExport().stream()
+                                                .map(Employee::toString).collect(Collectors.toList())));
+                    case "services":
+                        return new CommandResult(
+                                String.join("\n",
+                                        app.getServiceDAO().doExport().stream()
+                                                .map(Service::toString).collect(Collectors.toList())));
+                    case "offices":
+                        return new CommandResult(
+                                String.join("\n",
+                                        app.getOfficeDAO().doExport().stream()
+                                                .map(Office::toString).collect(Collectors.toList())));
+                    case "orders":
+                        return new CommandResult(
+                                String.join("\n",
+                                        app.getOrderDAO().doExport().stream()
+                                                .map(Order::toString).collect(Collectors.toList())));
+                    default:
+                        return new CommandResult("print: parameters passed: " + params);
+                }
             }
         });
 
